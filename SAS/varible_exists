@@ -1,0 +1,32 @@
+/* To check if the varible exists in a dataset using different sas programs and using macrios*/
+
+Libname practice '/folders/myfolders';
+
+/*Importing .xlsx file into sas dataset*/
+
+proc import datafile="/folders/myfolders/Invoices.xlsx"
+dbms=xlsx replace
+out=practice.invoice;
+getnames=yes;
+run;
+
+
+/* to check if VisitID variable does exist in invoice dataset*/;
+/*using open and varnum functions*/
+
+data _null_;
+dset=open('practice.invoice');
+check=varnum(dset,'VisitID');
+if check=0 then put 'The variable does not exist'; 
+else put 'variable is located in column' check +(_1) '.';
+run;
+
+/*using call symput routine to create a macrovariable */
+
+data _null_;
+dset=open('practice.invoice');
+call symput ('chk',varnum(dset,'VisitID'));
+run;
+
+%put the varible column = &chk;
+
